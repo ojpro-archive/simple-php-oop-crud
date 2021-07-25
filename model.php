@@ -20,8 +20,16 @@ class Model
         try {
             // Use PDO class
             $this->connect = new PDO($this->sdn, $this->db_user, $this->db_pass);
-
-        } catch (Exception $e) { 
+            // if connected
+            if ($this->connect) {
+                // Create records table if not already exists
+                $query = "CREATE TABLE IF NOT EXISTS records(
+                    id int auto_increment primary key,
+                    name varchar(30),email varchar(50) unique,
+                    number varchar(16) , notes varchar(255))";
+                $this->connect->prepare($query)->execute();
+            }
+        } catch (Exception $e) {
             // if can't connect display error message
             redirectTo($e->getMessage());
         }
@@ -95,7 +103,7 @@ class Model
                 redirectTo('Record updated successfuly.', "item.php?id=$id");
             } else {
                 // else show error message
-                redirectTo('Something wrong!, PLease try again. '.$query);
+                redirectTo('Something wrong!, PLease try again. ' . $query);
             }
         }
     }
